@@ -1,0 +1,15 @@
+pandas
+numpy
+joblib
+pymupdf
+opencv-python
+pillow
+pytesseract
+nltk
+scikit-learn
+imbalanced-learn
+seaborn
+matplotlib
+fastapi
+uvicorn
+pydantic

@@ -1,0 +1,28 @@
+paths:
+paths:
+  data_dir: "data"
+  cache_subdir: "cache"
+  training_subpath: "training/training_data.csv"
+  models_dir: "models"
+  logs_dir: "logs"
+
+  model_base_name: "cached_multimodal_doc_classifier"
+  version_file: "version.txt"        # at project root
+  missing_files_log: "data/missing_files_log.csv"
+
+ocr:
+  tesseract_cmd: "C:/Program Files/Tesseract-OCR/tesseract.exe"
+  threshold_ocr: 100
+
+processing:
+  version: "v1"
+
+training:
+  test_size: 0.2
+  random_state: 42
+  n_splits_cv: 5
+  trusted_classes: ["Manual", "Drawing", "Datasheet", "Certificate"]
+
+semi_supervised:
+  confidence_threshold: 0.90
+  max_per_class: 300

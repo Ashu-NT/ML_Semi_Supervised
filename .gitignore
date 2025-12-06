@@ -1,0 +1,74 @@
+# -------------------------
+# PYTHON & ENVIRONMENT
+# -------------------------
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.so
+*.dll
+
+# Virtual environments
+.venv/
+venv/
+env/
+*.egg-info/
+dist/
+build/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# -------------------------
+# CACHE & GENERATED FILES
+# -------------------------
+data/cache/
+data/predictions/
+data/missing_files_log.csv
+cache/
+.joblib_memmap/
+joblib/
+
+# -------------------------
+# MODEL FILES
+# -------------------------
+models/
+!models/.gitkeep    # If you want to keep folder structure only
+
+# -------------------------
+# TRAINING DATA (PRIVATE)
+# -------------------------
+data/training/
+data/unlabeled/
+data/raw/
+
+# Allow sample data files
+!data/training/example_training_data.csv
+
+# -------------------------
+# LOGS
+# -------------------------
+logs/
+*.log
+
+# -------------------------
+# IDE FILES
+# -------------------------
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# -------------------------
+# OS SPECIFIC
+# -------------------------
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# -------------------------
+# CONFIG-SENSITIVE
+# -------------------------
+# keep YAML, but ignore secrets
+*.secret.yaml
+config/secrets/
