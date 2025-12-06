@@ -180,12 +180,4 @@ python -m src.cli.predict --input path/to/folder --recursive
    ```bash
    python -m src.cli.train
    ```
-
----
-
-##  Roadmap
-
-- FastAPI server for real-time PDF classification  
-- Docker container  
-- Active learning loop  
-- Document embeddings (optional upgrade)  
+ 
