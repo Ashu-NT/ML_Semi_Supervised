@@ -32,10 +32,10 @@ app = FastAPI(
     version="1.0.0",
     contact={
         "name": "Document ML Pipeline",
-        "url": "https://github.com/your-user/your-repo",  # optional
+        "url": "https://github.com/Ashu-NT/ML_Semi_Supervised",  
     },
     license_info={
-        "name": "Proprietary / Internal",  # or MIT / Apache-2.0, etc.
+        "name": "Proprietary / Internal",  
     },
 )
 
