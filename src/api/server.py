@@ -442,7 +442,30 @@ async def get_model_metrics(version: int):
         logger.exception("Error reading metrics for version %d: %s", version, e)
         raise HTTPException(status_code=500, detail="Failed to read metrics file.")
 
-    
+@app.post(
+    "/models/{version}/evaluate",
+    summary="Run evaluation on a specific model version using the fixed eval set",
+    tags=["Models"],
+)
+async def evaluate_model_version(version: int, save_metrics: bool = True):
+    """
+    Trigger evaluation of a given model version on the configured eval CSV.
+    This may take time (OCR + model inference).
+    """
+    try:
+        df_eval = _load_eval_data(cfg)
+        metrics = _evaluate_model_version(cfg, version=version, df_eval=df_eval, save_metrics=save_metrics)
+        return metrics
+    except FileNotFoundError as e:
+        logger.error("Eval error: %s", e)
+        raise HTTPException(status_code=404, detail=str(e))
+    except ValueError as e:
+        logger.error("Eval error: %s", e)
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        logger.exception("Unexpected error during evaluation: %s", e)
+        raise HTTPException(status_code=500, detail="Evaluation failed due to an internal error.")
+ 
 @app.post(
     "/predict",
     response_model=PredictionResult,
@@ -483,7 +506,6 @@ async def predict_pdf(file: UploadFile = File(..., description="A single PDF doc
             os.remove(tmp_path)
         except OSError:
             pass
-
 
 @app.post(
     "/predict-batch",
@@ -549,7 +571,6 @@ async def predict_batch(
                 pass
 
     return results
-
 
 @app.post(
     "/predict-batch-csv",
