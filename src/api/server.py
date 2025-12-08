@@ -14,6 +14,9 @@ from typing import List, Optional
 import glob
 import json
 
+from sklearn.metrics import accuracy_score, f1_score, classification_report, confusion_matrix
+from datetime import datetime
+
 from src.config_loader import load_config
 from src.data.ocr import init_pdf_processor
 from src.data.text_processing import TextProcessor
@@ -232,6 +235,108 @@ def _load_eval_data(cfg, eval_csv_path: Optional[str] = None) -> pd.DataFrame:
 
     tp.save_cache()
     return df
+
+def _evaluate_model_version(
+    cfg,
+    version: int,
+    df_eval: pd.DataFrame,
+    save_metrics: bool = True,
+) -> dict:
+    """
+    Evaluate a given model version on df_eval and optionally persist metrics JSON.
+    Returns a metrics dict.
+    """
+    paths = cfg["paths_resolved"]
+    base = paths["model_base_name"]
+    models_dir = paths["models_dir"]
+
+    model_filename = f"{base}_v{version}.pkl"
+    model_path = os.path.join(models_dir, model_filename)
+    if not os.path.exists(model_path):
+        raise FileNotFoundError(f"Model file not found: {model_path}")
+
+    logger.info("Evaluating model version %d from %s", version, model_path)
+    bundle = joblib.load(model_path)
+    model = bundle["model"]
+    label_dict = bundle["label_dict"]
+    inv_label_dict = {v: k for k, v in label_dict.items()}
+
+    # Filter to only classes known by this model
+    valid_mask = df_eval["Document types"].isin(label_dict.keys())
+    dropped = df_eval[~valid_mask]
+    if not dropped.empty:
+        logger.warning(
+            "Dropping %d eval rows with unseen classes: %s",
+            len(dropped),
+            dropped["Document types"].unique().tolist(),
+        )
+
+    df_eval_used = df_eval[valid_mask].reset_index(drop=True)
+    if df_eval_used.empty:
+        raise ValueError("No eval rows left after filtering for known classes.")
+
+    df_eval_used["Label"] = df_eval_used["Document types"].map(label_dict)
+
+    X = df_eval_used[["Processed_Text", "Visual_Features"]]
+    y_true = df_eval_used["Label"].values
+
+    y_pred = model.predict(X)
+    acc = accuracy_score(y_true, y_pred)
+    macro_f1 = f1_score(y_true, y_pred, average="macro")
+
+    cls_report = classification_report(
+        y_true,
+        y_pred,
+        labels=sorted(inv_label_dict.keys()),
+        target_names=[inv_label_dict[i] for i in sorted(inv_label_dict.keys())],
+        output_dict=True,
+        zero_division=0,
+    )
+    cm = confusion_matrix(y_true, y_pred, labels=sorted(inv_label_dict.keys()))
+
+    metrics = {
+        "version": version,
+        "evaluated_at": datetime.utcnow().isoformat() + "Z",
+        "n_eval": int(len(df_eval_used)),
+        "accuracy": float(acc),
+        "macro_f1": float(macro_f1),
+        "per_class": {
+            name: {
+                "precision": float(v["precision"]),
+                "recall": float(v["recall"]),
+                "f1": float(v["f1-score"]),
+                "support": int(v["support"]),
+            }
+            for name, v in cls_report.items()
+            if name not in ("accuracy", "macro avg", "weighted avg")
+        },
+        "confusion_matrix": {
+            "labels": [inv_label_dict[i] for i in sorted(inv_label_dict.keys())],
+            "matrix": cm.tolist(),
+        },
+    }
+
+    if save_metrics:
+        metrics_filename = f"{base}_v{version}.metrics.json"
+        metrics_path = os.path.join(models_dir, metrics_filename)
+
+        payload = {}
+        if os.path.exists(metrics_path):
+            try:
+                with open(metrics_path, "r", encoding="utf-8") as f:
+                    payload = json.load(f)
+            except Exception:
+                payload = {}
+
+        payload["version"] = version
+        payload["eval"] = metrics
+
+        with open(metrics_path, "w", encoding="utf-8") as f:
+            json.dump(payload, f, indent=2)
+
+        logger.info("Saved eval metrics to %s", metrics_path)
+
+    return metrics
 
 # API Endpoints
 
