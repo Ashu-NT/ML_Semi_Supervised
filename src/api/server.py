@@ -17,6 +17,8 @@ from src.model.versioning import VersionManager
 
 logger = logging.getLogger(__name__)
 
+REJECT_THRESHOLD = 0.70
+
 # -----------------------------------------------------------------------------
 # FastAPI app with OpenAPI / Swagger metadata
 # -----------------------------------------------------------------------------
@@ -101,9 +103,6 @@ PDFProcessor = init_pdf_processor(
 text_processor = TextProcessor(cache_dir=paths["cache_dir"])
 text_processor.load_cache()
 
-# Same threshold as CLI
-REJECT_THRESHOLD = 0.60
-
 
 # -----------------------------------------------------------------------------
 # Helper functions
@@ -164,6 +163,15 @@ def predict_single_pdf(tmp_path: str) -> PredictionResult:
 # -----------------------------------------------------------------------------
 # API Endpoints
 # -----------------------------------------------------------------------------
+
+@app.get("/", tags=["Health"])
+async def root():
+    return {
+        "message": "Document Classifier API is running.",
+        "docs": "/docs",
+        "endpoints": ["/predict", "/predict-batch", "/predict-batch-csv"],
+    }
+    
 @app.post(
     "/predict",
     response_model=PredictionResult,
