@@ -14,14 +14,11 @@ from src.config_loader import load_config
 from src.data.ocr import init_pdf_processor
 from src.data.text_processing import TextProcessor
 from src.model.versioning import VersionManager
+from src.cli.predict import REJECT_THRESHOLD
 
 logger = logging.getLogger(__name__)
 
-REJECT_THRESHOLD = 0.70
-
-# -----------------------------------------------------------------------------
 # FastAPI app with OpenAPI / Swagger metadata
-# -----------------------------------------------------------------------------
 app = FastAPI(
     title="Semi-Supervised Document Classifier API",
     description=(
@@ -41,9 +38,8 @@ app = FastAPI(
     },
 )
 
-# -----------------------------------------------------------------------------
 # Pydantic models for OpenAPI
-# -----------------------------------------------------------------------------
+
 class PredictionResult(BaseModel):
     file_name: str = Field(..., example="seatel_manual.pdf")
     status: str = Field(
@@ -73,9 +69,8 @@ class PredictionResult(BaseModel):
     )
 
 
-# -----------------------------------------------------------------------------
 # Load config, model, and processors at startup
-# -----------------------------------------------------------------------------
+
 cfg = load_config()
 paths = cfg["paths_resolved"]
 
@@ -103,10 +98,8 @@ PDFProcessor = init_pdf_processor(
 text_processor = TextProcessor(cache_dir=paths["cache_dir"])
 text_processor.load_cache()
 
-
-# -----------------------------------------------------------------------------
 # Helper functions
-# -----------------------------------------------------------------------------
+
 def prepare_features_for_temp_pdf(tmp_path: str) -> pd.DataFrame:
     """
     Run OCR + preprocessing + visual-feature extraction on a single temp PDF path
@@ -159,10 +152,7 @@ def predict_single_pdf(tmp_path: str) -> PredictionResult:
         error=None,
     )
 
-
-# -----------------------------------------------------------------------------
 # API Endpoints
-# -----------------------------------------------------------------------------
 
 @app.get("/", tags=["Health"])
 async def root():

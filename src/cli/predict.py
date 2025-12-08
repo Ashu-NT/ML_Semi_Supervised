@@ -14,7 +14,7 @@ from src.data.text_processing import TextProcessor
 from src.model.versioning import VersionManager
 
 logger = logging.getLogger(__name__)
-REJECT_THRESHOLD = 0.7  # for example
+REJECT_THRESHOLD = 0.75
 
 def prepare_features_for_pdfs(pdf_paths, cfg):
     """
