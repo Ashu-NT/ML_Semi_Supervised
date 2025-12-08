@@ -347,6 +347,71 @@ async def root():
         "docs": "/docs",
         "endpoints": ["/predict", "/predict-batch", "/predict-batch-csv"],
     }
+
+@app.get(
+    "/models",
+    response_model=List[ModelSummary],
+    summary="List available model versions and their metrics",
+    tags=["Models"],
+)
+async def list_models():
+    """
+    List all available model versions, show whether they're current,
+    and summarize evaluation metrics if available.
+    """
+    paths = cfg["paths_resolved"]
+    models_dir = paths["models_dir"]
+    base = paths["model_base_name"]
+
+    vm = VersionManager(paths["version_file"])
+    current_version = vm.get_last_version()
+
+    pattern = os.path.join(models_dir, f"{base}_v*.pkl")
+    model_files = sorted(glob.glob(pattern))
+
+    summaries: List[ModelSummary] = []
+
+    for path in model_files:
+        fname = os.path.basename(path)
+        try:
+            ver_str = fname.split("_v")[-1].split(".pkl")[0]
+            ver = int(ver_str)
+        except Exception:
+            logger.warning("Could not parse version from %s", fname)
+            continue
+
+        metrics_path = os.path.join(models_dir, f"{base}_v{ver}.metrics.json")
+        has_metrics = os.path.exists(metrics_path)
+
+        acc = None
+        macro_f1 = None
+        n_eval = None
+
+        if has_metrics:
+            try:
+                with open(metrics_path, "r", encoding="utf-8") as f:
+                    data = json.load(f)
+                eval_m = data.get("eval", {})
+                acc = eval_m.get("accuracy")
+                macro_f1 = eval_m.get("macro_f1")
+                n_eval = eval_m.get("n_eval")
+            except Exception as e:
+                logger.warning("Failed to load metrics from %s: %s", metrics_path, e)
+
+        summaries.append(
+            ModelSummary(
+                version=ver,
+                is_current=(ver == current_version),
+                model_file=fname,
+                has_metrics=has_metrics,
+                accuracy=acc,
+                macro_f1=macro_f1,
+                n_eval=n_eval,
+            )
+        )
+
+    return summaries
+
     
 @app.post(
     "/predict",
