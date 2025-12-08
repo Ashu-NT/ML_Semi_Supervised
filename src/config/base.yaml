@@ -3,6 +3,7 @@ paths:
   data_dir: "data"
   cache_subdir: "cache"
   training_subpath: "training/training_data.csv"
+  eval_csv: "data/eval/test_data.csv"
   models_dir: "models"
   logs_dir: "logs"
 
