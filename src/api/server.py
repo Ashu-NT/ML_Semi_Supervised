@@ -105,7 +105,6 @@ class ModelSummary(BaseModel):
         example=98,
     )
 
-
 # Load config, model, and processors at startup
 
 cfg = load_config()
@@ -158,7 +157,6 @@ def prepare_features_for_temp_pdf(tmp_path: str) -> pd.DataFrame:
     text_processor.save_cache()
     return df
 
-
 def predict_single_pdf(tmp_path: str) -> PredictionResult:
     """
     Core prediction logic: given a temp PDF path, return a structured prediction.
@@ -188,6 +186,52 @@ def predict_single_pdf(tmp_path: str) -> PredictionResult:
         confidence=conf,
         error=None,
     )
+
+def _load_eval_data(cfg, eval_csv_path: Optional[str] = None) -> pd.DataFrame:
+    """
+    Load and process the evaluation CSV into features.
+    This mirrors the CLI evaluation behavior.
+    """
+    paths = cfg["paths_resolved"]
+    if eval_csv_path is None:
+        eval_csv_path = paths["eval_csv"]
+
+    eval_csv_path = os.path.abspath(eval_csv_path)
+    if not os.path.exists(eval_csv_path):
+        raise FileNotFoundError(f"Eval CSV not found: {eval_csv_path}")
+
+    logger.info("Loading eval data from %s", eval_csv_path)
+    df = pd.read_csv(eval_csv_path)
+
+    if "File Path" not in df.columns or "Document types" not in df.columns:
+        raise ValueError("Eval CSV must contain 'File Path' and 'Document types' columns.")
+
+    df["File Path"] = df["File Path"].apply(os.path.normpath)
+
+    exists_mask = df["File Path"].apply(os.path.exists)
+    missing = df[~exists_mask]
+    if not missing.empty:
+        logger.warning("Dropping %d eval rows because file does not exist.", len(missing))
+    df = df[exists_mask].reset_index(drop=True)
+
+    if df.empty:
+        raise ValueError("No valid eval rows after filtering missing files.")
+
+    # Reuse processors
+    PDFProc = PDFProcessor  # already initialized globally
+    tp = text_processor
+
+    logger.info("Processing eval documents ( OCR + text + visual features )...")
+    df["Raw_Text"] = df["File Path"].apply(
+        lambda x: PDFProc.extract_text(x, cfg["processing"]["version"])
+    )
+    df["Processed_Text"] = df["Raw_Text"].apply(tp.preprocess)
+    df["Visual_Features"] = df["File Path"].apply(
+        lambda x: PDFProc.extract_visual_features(x, cfg["processing"]["version"])
+    )
+
+    tp.save_cache()
+    return df
 
 # API Endpoints
 
