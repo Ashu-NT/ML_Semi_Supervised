@@ -7,8 +7,12 @@ import logging
 import joblib
 import pandas as pd
 from fastapi import FastAPI, UploadFile, File, HTTPException
-from fastapi.responses import JSONResponse, StreamingResponse
+from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field
+from typing import List, Optional
+
+import glob
+import json
 
 from src.config_loader import load_config
 from src.data.ocr import init_pdf_processor
@@ -66,6 +70,39 @@ class PredictionResult(BaseModel):
         None,
         description="Error message if status == 'ERROR'.",
         example="Only PDF files are supported.",
+    )
+
+class ModelSummary(BaseModel):
+    version: int = Field(..., example=2)
+    is_current: bool = Field(
+        ...,
+        description="True if this version is the one pointed to by version.txt.",
+        example=True,
+    )
+    model_file: str = Field(
+        ...,
+        description="Filename of the model bundle.",
+        example="cached_multimodal_doc_classifier_v2.pkl",
+    )
+    has_metrics: bool = Field(
+        ...,
+        description="Whether metrics JSON exists for this version.",
+        example=True,
+    )
+    accuracy: Optional[float] = Field(
+        None,
+        description="Last recorded evaluation accuracy on the fixed test set.",
+        example=0.91,
+    )
+    macro_f1: Optional[float] = Field(
+        None,
+        description="Last recorded macro-averaged F1 on the fixed test set.",
+        example=0.89,
+    )
+    n_eval: Optional[int] = Field(
+        None,
+        description="Number of eval samples used in last evaluation.",
+        example=98,
     )
 
 
