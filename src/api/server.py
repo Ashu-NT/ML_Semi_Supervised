@@ -412,6 +412,36 @@ async def list_models():
 
     return summaries
 
+@app.get(
+    "/models/{version}/metrics",
+    summary="Get stored evaluation metrics for a specific model version",
+    tags=["Models"],
+)
+async def get_model_metrics(version: int):
+    """
+    Return the saved evaluation metrics JSON for a given model version, if present.
+    Does NOT trigger a new evaluation; just reads the metrics file.
+    """
+    paths = cfg["paths_resolved"]
+    base = paths["model_base_name"]
+    models_dir = paths["models_dir"]
+
+    metrics_path = os.path.join(models_dir, f"{base}_v{version}.metrics.json")
+    if not os.path.exists(metrics_path):
+        raise HTTPException(
+            status_code=404,
+            detail=f"No metrics file found for version {version}. "
+                   f"Run evaluation first (CLI or /models/{version}/evaluate).",
+        )
+
+    try:
+        with open(metrics_path, "r", encoding="utf-8") as f:
+            data = json.load(f)
+        return data
+    except Exception as e:
+        logger.exception("Error reading metrics for version %d: %s", version, e)
+        raise HTTPException(status_code=500, detail="Failed to read metrics file.")
+
     
 @app.post(
     "/predict",
