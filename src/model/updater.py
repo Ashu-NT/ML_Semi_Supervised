@@ -140,10 +140,22 @@ class ModelUpdater:
         if "Document types" not in new_data.columns:
             raise ValueError("New data must contain a 'Document types' column.")
 
+        initial_count = len(new_data)
         new_data = self._filter_existing_files(new_data, label_name="New-data")
 
         # Deduplicate by File Path vs previous cache
         if not self.previous_cache.empty and "File Path" in self.previous_cache.columns:
+            # Count how many new_data file paths are already present in previous_cache
+            in_cache_mask = new_data["File Path"].isin(self.previous_cache["File Path"])
+            count_in_cache = int(in_cache_mask.sum())
+            count_remaining = int((~in_cache_mask).sum())
+
+            logger.info(
+                "New-data rows: %d | Already in cache: %d | To process as new: %d",
+                initial_count,
+                count_in_cache,
+                count_remaining,
+            )
             new_data = new_data[
                 ~new_data["File Path"].isin(self.previous_cache["File Path"])
             ]
