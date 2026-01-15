@@ -1,15 +1,14 @@
-cd src
-python -m src.cli.train
-
-python -m src.cli.predict --input path/to/file.pdf
-python -m src.cli.predict --input path/to/folder
-python -m src.cli.predict --input path/to/folder --recursive
-
-if new csv has new document type do not forget to add new document to the config
-
 # Document Classifier – OCR + NLP + Semi-Supervised Learning
+A production-oriented document classification system for **engineering PDFs**
+that combines OCR, NLP, and semi-supervised learning to reduce labeling effort
+while supporting continuous model improvement.
 
-A production-grade document classification system for PDFs using:
+This project is designed for environments where:
+- New document types appear over time
+- Manual labeling is expensive
+- Models must evolve incrementally without retraining from scratch
+  
+The system makes use of the following:
 
 - **OCR (PyMuPDF + Tesseract)**
 - **Text preprocessing + lemmatization**
@@ -28,7 +27,34 @@ This system classifies engineering PDFs into categories such as:
 - Delivery Documentation (treated as *unlabeled* during updates)
 
 ---
+## Why Semi-Supervised Learning?
 
+In real document pipelines, not all incoming documents are labeled.
+This system treats certain categories (e.g. *Delivery Documentation*)
+as **unlabeled by design**, and uses confident predictions
+to pseudo-label them during model updates.
+
+This enables:
+- Reduced labeling effort
+- Continuous learning
+- Controlled model drift via versioning
+
+---
+## System Overview
+
+PDF → OCR → Text + Visual Features
+      ↓
+  Cached Features
+      ↓
+Supervised Model (v1)
+      ↓
+Unlabeled Data
+      ↓
+Pseudo-Labeling
+      ↓
+Updated Model (v2, v3, ...)
+
+---
 ## Project Structure
 
 ```
