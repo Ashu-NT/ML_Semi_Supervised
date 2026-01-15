@@ -1,5 +1,6 @@
 import yaml
 from pathlib import Path
+from typing import Dict, Any
 
 # This file is at: <project_root>/src/config_loader.py
 BASE_DIR = Path(__file__).resolve().parent      # .../src
@@ -17,9 +18,9 @@ def load_config(env: str = "base"):
         raise FileNotFoundError(f"Config file not found: {cfg_path}")
 
     with cfg_path.open("r") as f:
-        cfg = yaml.safe_load(f)
+        cfg: Dict[str, Any] = yaml.safe_load(f)
 
-    paths = cfg.get("paths", {})
+    paths:Dict = cfg.get("paths", {})
 
     data_dir = PROJECT_ROOT / paths.get("data_dir", "data")
     cache_dir = data_dir / paths.get("cache_subdir", "cache")

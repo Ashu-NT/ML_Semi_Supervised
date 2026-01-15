@@ -8,6 +8,7 @@ import joblib
 import pandas as pd
 from fastapi import FastAPI, UploadFile, File, HTTPException
 from fastapi.responses import StreamingResponse
+from starlette.concurrency import run_in_threadpool
 from pydantic import BaseModel, Field
 from typing import List, Optional
 
@@ -506,16 +507,21 @@ async def predict_pdf(file: UploadFile = File(..., description="A single PDF doc
     # Save upload to temporary file
     with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp:
         tmp_path = tmp.name
-        content = await file.read()
-        tmp.write(content)
+        #content = await file.read()
+        #tmp.write(content)
+        while chunk := await file.read(1024 * 1024):
+            tmp.write(chunk)
+        tmp.flush()
 
     try:
-        pred = predict_single_pdf(tmp_path)
+        #pred = predict_single_pdf(tmp_path)
+        pred = await run_in_threadpool(predict_single_pdf, tmp_path)
         # Use original filename in API response
         pred.file_name = file.filename
         return pred
     finally:
         try:
+            await file.close()
             os.remove(tmp_path)
         except OSError:
             pass
@@ -558,11 +564,15 @@ async def predict_batch(
 
         with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp:
             tmp_path = tmp.name
-            content = await file.read()
-            tmp.write(content)
-
+            #content = await file.read()
+            #tmp.write(content)
+            while chunk := await file.read(1024 * 1024):
+                tmp.write(chunk)
+            tmp.flush()
+        
         try:
-            pred = predict_single_pdf(tmp_path)
+            #pred = predict_single_pdf(tmp_path)
+            pred = await run_in_threadpool(predict_single_pdf, tmp_path)
             pred.file_name = file_name
             results.append(pred)
         except Exception as e:
@@ -579,6 +589,7 @@ async def predict_batch(
             )
         finally:
             try:
+                await file.close()
                 os.remove(tmp_path)
             except OSError:
                 pass
