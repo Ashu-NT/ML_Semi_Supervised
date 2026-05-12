@@ -20,7 +20,8 @@ REJECT_THRESHOLD = 0.75
 
 def prepare_features_for_pdfs(pdf_paths, cfg):
     """
-    Prepare features for each PDF with progress updates.
+    Prepare features for each PDF with a clean progress bar.
+    Only failed files are printed separately.
     """
     paths_resolved = cfg["paths_resolved"]
     cache_dir = paths_resolved["cache_dir"]
@@ -39,29 +40,26 @@ def prepare_features_for_pdfs(pdf_paths, cfg):
 
     print("\nStarting PDF feature extraction...")
     print(f"Total PDFs found: {total_files}\n")
+    
+    progress_bar = tqdm(pdf_paths, desc="Processing PDFs", unit="file", dynamic_ncols=True)
 
-    for index, p in enumerate(tqdm(pdf_paths, desc="Processing PDFs", unit="file"), start=1):
+    for p in progress_bar:
         p_norm = os.path.normpath(p)
-
-        print(f"\n[{index}/{total_files}] Processing:")
-        print(f"File: {p_norm}")
-
+        progress_bar.set_postfix_str(os.path.basename(p_norm)[:50])
+        
         if not os.path.exists(p_norm):
             logger.warning("File does not exist, skipping: %s", p_norm)
-            print("Status: skipped - file does not exist")
+            tqdm.write(f"SKIPPED: {p_norm} | File does not exist")
             continue
 
         try:
-            print("Step 1/3: Extracting text...")
             raw_text = PDFProcessor.extract_text(
                 p_norm,
                 cfg["processing"]["version"]
             )
 
-            print("Step 2/3: Preprocessing text...")
             processed_text = text_processor.preprocess(raw_text)
 
-            print("Step 3/3: Extracting visual features...")
             visual_features = PDFProcessor.extract_visual_features(
                 p_norm,
                 cfg["processing"]["version"]
@@ -73,20 +71,16 @@ def prepare_features_for_pdfs(pdf_paths, cfg):
                 "Visual_Features": visual_features,
             })
 
-            remaining = total_files - index
-            print(f"Status: completed")
-            print(f"Remaining files: {remaining}")
-
         except Exception as e:
             logger.exception("Failed to process file: %s", p_norm)
-            print(f"Status: failed")
-            print(f"Error: {e}")
+            tqdm.write(f"FAILED: {p_norm} | Error: {e}")
             continue
 
     print("\nSaving text cache...")
     text_processor.save_cache()
 
     if not records:
+        print("No valid PDFs were processed.")
         return pd.DataFrame()
 
     print("\nFeature extraction completed.")
