@@ -53,14 +53,14 @@ def init_pdf_processor(cache_dir: str, tesseract_cmd: str, threshold_ocr: int):
                         page_text = page.get_text("text") or ""
 
                         if len(page_text.strip()) < PDFProcessor.THRESHOLD_OCR:
-                            logger.info(
+                            logger.debug(
                                 "OCR used for page %d in file: %s",
                                 page_number,
                                 pdf_path
                             )
 
                             # Render page at higher resolution for better OCR
-                            pix = page.get_pixmap(matrix=fitz.Matrix(2, 2), alpha=False)
+                            pix = page.get_pixmap(matrix=fitz.Matrix(1.5, 1.5), alpha=False)
 
                             img = Image.frombytes(
                                 "RGB",

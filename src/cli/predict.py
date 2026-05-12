@@ -221,6 +221,8 @@ def main():
             "prediction": display_prediction,
             "best_label": best_label,
             "confidence": conf,
+            "model_version": last_version,
+            "model_file": model_filename,
         })
 
     print("\n" + "=" * 80)
