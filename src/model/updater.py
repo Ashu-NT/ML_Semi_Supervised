@@ -5,6 +5,8 @@ from typing import Optional, List
 import pandas as pd
 import numpy as np
 import joblib
+from tqdm import tqdm
+import time
 
 from sklearn.model_selection import train_test_split, StratifiedKFold, cross_val_score
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
@@ -208,13 +210,15 @@ class ModelUpdater:
         return df[~bad_mask].reset_index(drop=True)
 
     # Processing
-
+    
     def process_new_data(self, new_data: pd.DataFrame) -> pd.DataFrame:
         if "File Path" not in new_data.columns:
             raise ValueError("New data must contain 'File Path' column.")
 
         if "Document types" not in new_data.columns:
             raise ValueError("New data must contain 'Document types' column.")
+
+        total_start = time.time()
 
         initial_count = len(new_data)
         new_data = self._filter_existing_files(new_data, label_name="New-data")
@@ -244,19 +248,84 @@ class ModelUpdater:
             new_data["Document types"].value_counts(),
         )
 
-        new_data["Raw_Text"] = new_data["File Path"].apply(
-            lambda x: self.PDFProcessor.extract_text(x, self.processing_version)
+        # 1. Raw text extraction
+  
+        def timed_extract_text(path):
+            start = time.time()
+
+            text = self.PDFProcessor.extract_text(
+                path,
+                self.processing_version
+            )
+
+            elapsed = time.time() - start
+
+            if elapsed > 20:
+                logger.warning(
+                    "[Slow PDF] Text extraction took %.2f sec: %s",
+                    elapsed,
+                    os.path.basename(path),
+                )
+
+            return text
+
+        start = time.time()
+
+        tqdm.pandas(desc="Extracting text")
+        new_data["Raw_Text"] = new_data["File Path"].progress_apply(
+            timed_extract_text
         )
 
-        new_data["Processed_Text"] = new_data["Raw_Text"].apply(
+        logger.info(
+            "Raw text extraction completed in %.2f seconds.",
+            time.time() - start,
+        )
+
+        # 2. Text preprocessing
+        
+        start = time.time()
+
+        tqdm.pandas(desc="Preprocessing text")
+        new_data["Processed_Text"] = new_data["Raw_Text"].progress_apply(
             self.text_processor.preprocess
         )
 
-        new_data["Visual_Features"] = new_data["File Path"].apply(
-            lambda x: self.PDFProcessor.extract_visual_features(
-                x,
+        logger.info(
+            "Text preprocessing completed in %.2f seconds.",
+            time.time() - start,
+        )
+
+        # 3. Visual feature extraction
+
+        def timed_visual_features(path):
+            start = time.time()
+
+            features = self.PDFProcessor.extract_visual_features(
+                path,
                 self.processing_version,
             )
+
+            elapsed = time.time() - start
+
+            if elapsed > 10:
+                logger.warning(
+                    "[Slow PDF] Visual feature extraction took %.2f sec: %s",
+                    elapsed,
+                    os.path.basename(path),
+                )
+
+            return features
+
+        start = time.time()
+
+        tqdm.pandas(desc="Extracting visual features")
+        new_data["Visual_Features"] = new_data["File Path"].progress_apply(
+            timed_visual_features
+        )
+
+        logger.info(
+            "Visual feature extraction completed in %.2f seconds.",
+            time.time() - start,
         )
 
         new_data = self._drop_failed_rows(new_data, label_name="New-data")
@@ -284,6 +353,11 @@ class ModelUpdater:
         logger.info("Updated processed data cache saved to %s", cache_file)
 
         self.text_processor.save_cache()
+
+        logger.info(
+            "Total new-data processing time: %.2f seconds.",
+            time.time() - total_start,
+        )
 
         return updated_data
 
