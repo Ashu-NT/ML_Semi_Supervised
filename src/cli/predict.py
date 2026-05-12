@@ -6,6 +6,8 @@ from pathlib import Path
 import pandas as pd
 import joblib
 from datetime import datetime
+from tqdm import tqdm
+import time
 
 from src.config_loader import load_config
 from src.logging_config import setup_logging
@@ -18,8 +20,7 @@ REJECT_THRESHOLD = 0.75
 
 def prepare_features_for_pdfs(pdf_paths, cfg):
     """
-    Given a list of PDF paths, run them through PDFProcessor + TextProcessor
-    and return a DataFrame with Processed_Text and Visual_Features.
+    Prepare features for each PDF with progress updates.
     """
     paths_resolved = cfg["paths_resolved"]
     cache_dir = paths_resolved["cache_dir"]
@@ -34,27 +35,62 @@ def prepare_features_for_pdfs(pdf_paths, cfg):
     text_processor.load_cache()
 
     records = []
-    for p in pdf_paths:
+    total_files = len(pdf_paths)
+
+    print("\nStarting PDF feature extraction...")
+    print(f"Total PDFs found: {total_files}\n")
+
+    for index, p in enumerate(tqdm(pdf_paths, desc="Processing PDFs", unit="file"), start=1):
         p_norm = os.path.normpath(p)
+
+        print(f"\n[{index}/{total_files}] Processing:")
+        print(f"File: {p_norm}")
+
         if not os.path.exists(p_norm):
             logger.warning("File does not exist, skipping: %s", p_norm)
+            print("Status: skipped - file does not exist")
             continue
 
-        raw_text = PDFProcessor.extract_text(p_norm, cfg["processing"]["version"])
-        processed_text = text_processor.preprocess(raw_text)
-        visual_features = PDFProcessor.extract_visual_features(p_norm, cfg["processing"]["version"])
+        try:
+            print("Step 1/3: Extracting text...")
+            raw_text = PDFProcessor.extract_text(
+                p_norm,
+                cfg["processing"]["version"]
+            )
 
-        records.append({
-            "File Path": p_norm,
-            "Processed_Text": processed_text,
-            "Visual_Features": visual_features,
-        })
+            print("Step 2/3: Preprocessing text...")
+            processed_text = text_processor.preprocess(raw_text)
 
-    # optional: save updated text cache
+            print("Step 3/3: Extracting visual features...")
+            visual_features = PDFProcessor.extract_visual_features(
+                p_norm,
+                cfg["processing"]["version"]
+            )
+
+            records.append({
+                "File Path": p_norm,
+                "Processed_Text": processed_text,
+                "Visual_Features": visual_features,
+            })
+
+            remaining = total_files - index
+            print(f"Status: completed")
+            print(f"Remaining files: {remaining}")
+
+        except Exception as e:
+            logger.exception("Failed to process file: %s", p_norm)
+            print(f"Status: failed")
+            print(f"Error: {e}")
+            continue
+
+    print("\nSaving text cache...")
     text_processor.save_cache()
 
     if not records:
         return pd.DataFrame()
+
+    print("\nFeature extraction completed.")
+    print(f"Successfully processed: {len(records)} / {total_files}")
 
     return pd.DataFrame(records)
 
@@ -133,38 +169,71 @@ def main():
     else:
         max_proba = [None] * len(preds)
 
+    print("\nRunning predictions...")
+    print(f"Files to predict: {len(df_feats)}")
     print("\nPredictions:")
 
+    print("\n" + "=" * 80)
+    print("RUNNING DOCUMENT CLASSIFICATION")
+    print("=" * 80)
+
+    total_predictions = len(df_feats)
     rows_for_csv = []
 
-    for i, row in df_feats.iterrows():
+    for pos, (df_index, row) in enumerate(
+        tqdm(
+            df_feats.iterrows(),
+            total=total_predictions,
+            desc="Predicting",
+            unit="file"
+        ),
+        start=1
+    ):
         file_path = row["File Path"]
 
-        label_idx = preds[i]
+        print("\n" + "-" * 80)
+        print(f"[{pos}/{total_predictions}] Processing Prediction")
+        print(f"File : {os.path.basename(file_path)}")
+        print(f"Path : {file_path}")
+
+        label_idx = preds[pos - 1]
         best_label = inv_label_dict.get(label_idx, f"CLASS_{label_idx}")
 
-        conf = max_proba[i] if max_proba is not None else None
+        conf = max_proba[pos - 1] if max_proba is not None else None
 
-        # Decide status + display prediction
         if conf is not None and conf < REJECT_THRESHOLD:
             status = "UNKNOWN"
             display_prediction = "UNKNOWN"
-            print(f"- {file_path} -> UNKNOWN (best: {best_label}, conf: {conf:.2f})")
+
+            print("Status      : UNKNOWN")
+            print(f"Best Match  : {best_label}")
+            print(f"Confidence  : {conf:.2%}")
+
         else:
             status = "OK"
             display_prediction = best_label
+
+            print("Status      : OK")
+            print(f"Prediction  : {best_label}")
+
             if conf is not None:
-                print(f"- {file_path} -> {best_label} (conf: {conf:.2f})")
-            else:
-                print(f"- {file_path} -> {best_label}")
+                print(f"Confidence  : {conf:.2%}")
+
+        print(f"Remaining   : {total_predictions - pos}")
 
         rows_for_csv.append({
             "file_path": file_path,
-            "status": status,              # "OK" or "UNKNOWN"
+            "status": status,
             "prediction": display_prediction,
-            "best_label": best_label,      # model's top class even if UNKNOWN
+            "best_label": best_label,
             "confidence": conf,
         })
+
+    print("\n" + "=" * 80)
+    print("PREDICTION PROCESS COMPLETED")
+    print(f"Total Files Processed : {total_predictions}")
+    print(f"Results Saved         : {len(rows_for_csv)}")
+    print("=" * 80)
 
     # ----- Save CSV report -----
     if rows_for_csv:

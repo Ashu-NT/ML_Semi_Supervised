@@ -1,0 +1,58 @@
+file_path,status,prediction,best_label,confidence
+C:\Users\ashu\Downloads\6464_13797.6461.01_lethe_galley\1.1_Zone Plan\13797-6011-K-992-000-02.pdf,OK,Drawing,Drawing,0.7616947556486451
+C:\Users\ashu\Downloads\6464_13797.6461.01_lethe_galley\1.3_Room Plan\13797-1074-K-990-000_06.pdf,UNKNOWN,UNKNOWN,Drawing,0.72199810562168
+C:\Users\ashu\Downloads\6464_13797.6461.01_lethe_galley\2.1_Sanitary Items\Annex C_13797_4521_4550_hidden items_rev00.pdf,UNKNOWN,UNKNOWN,Drawing,0.7101585087640649
+C:\Users\ashu\Downloads\6464_13797.6461.01_lethe_galley\2.3_Fittings Spareparts_LYG\04 13797_Boardwalk_Hardware catalogue (01-2026)_PDF-A.pdf,UNKNOWN,UNKNOWN,Datasheet,0.4467851328304573
+C:\Users\ashu\Downloads\6464_13797.6461.01_lethe_galley\2.7_Maintenance Instructions_LYG\2.7.1_Cleaning Manual Galleys\03 13797_Boardwalk_Cleaning Manual for Galley_PDF-A.pdf,OK,Manual,Manual,0.8821823751532404
+C:\Users\ashu\Downloads\6464_13797.6461.01_lethe_galley\2.7_Maintenance Instructions_LYG\2.7.2_Maintenance Instructions\13797-VI Z 2-Fire Damper.pdf,UNKNOWN,UNKNOWN,Drawing,0.49557582851350257
+C:\Users\ashu\Downloads\6464_13797.6461.01_lethe_galley\2.2_Electrical Items\2.2_1_Galley + Pantry equipment\1 13797_Boardwalk_Documentation_Review Equipment-List_22.01.26.pdf,UNKNOWN,UNKNOWN,Drawing,0.3832262431841602
+"C:\Users\ashu\Downloads\6464_13797.6461.01_lethe_galley\2.2_Electrical Items\2.2_1_Galley + Pantry equipment\Berner Deep Fat Fryer BFEM 40-2, LYG modification'.pdf",OK,Manual,Manual,0.9711285581878124
+C:\Users\ashu\Downloads\6464_13797.6461.01_lethe_galley\2.2_Electrical Items\2.2_1_Galley + Pantry equipment\Berner Griddle Plate BGE60 speed with ESRK'.pdf,OK,Manual,Manual,0.9088718517400735
+C:\Users\ashu\Downloads\6464_13797.6461.01_lethe_galley\2.2_Electrical Items\2.2_1_Galley + Pantry equipment\Berner Pasta Cooker BKE2-3E'.pdf,OK,Manual,Manual,0.9390382548644601
+C:\Users\ashu\Downloads\6464_13797.6461.01_lethe_galley\2.2_Electrical Items\2.2_1_Galley + Pantry equipment\Berner Salamander BSALH60TE'.pdf,OK,Manual,Manual,0.9068514896199321
+C:\Users\ashu\Downloads\6464_13797.6461.01_lethe_galley\2.2_Electrical Items\2.2_1_Galley + Pantry equipment\Berner Steak Grill Rustica BRLE70'.pdf,OK,Manual,Manual,0.9132581701823663
+C:\Users\ashu\Downloads\6464_13797.6461.01_lethe_galley\2.2_Electrical Items\2.2_1_Galley + Pantry equipment\Berner Surface Induction Unit BI6EGAF30_B'.pdf,OK,Manual,Manual,0.9456844481915992
+C:\Users\ashu\Downloads\6464_13797.6461.01_lethe_galley\2.2_Electrical Items\2.2_1_Galley + Pantry equipment\Blanco sink ANDANO 700-U with pullknob 221339'.pdf,UNKNOWN,UNKNOWN,Datasheet,0.4581527830026469
+C:\Users\ashu\Downloads\6464_13797.6461.01_lethe_galley\2.2_Electrical Items\2.2_1_Galley + Pantry equipment\Blanco sink Supra 400-U with pullknob 226540'.pdf,UNKNOWN,UNKNOWN,Datasheet,0.41737847392774474
+C:\Users\ashu\Downloads\6464_13797.6461.01_lethe_galley\2.2_Electrical Items\2.2_1_Galley + Pantry equipment\Echtermann mixing tap 201-101_250-250 1-2Zoll'.pdf,UNKNOWN,UNKNOWN,Certificate,0.3398467739524362
+C:\Users\ashu\Downloads\6464_13797.6461.01_lethe_galley\2.2_Electrical Items\2.2_1_Galley + Pantry equipment\Echtermann mixing tap 221-101_400-55 3-4Zoll'.pdf,UNKNOWN,UNKNOWN,Certificate,0.32183409615330466
+C:\Users\ashu\Downloads\6464_13797.6461.01_lethe_galley\2.2_Electrical Items\2.2_1_Galley + Pantry equipment\Echtermann pre-rinse shower (wall) Classic Clean 322-202_220-215'.pdf,UNKNOWN,UNKNOWN,Datasheet,0.2972222368308714
+C:\Users\ashu\Downloads\6464_13797.6461.01_lethe_galley\2.2_Electrical Items\2.2_1_Galley + Pantry equipment\Foster Blast Chiller Freezer BCT 15-7 w'.pdf,OK,Manual,Manual,0.9617178716162098
+C:\Users\ashu\Downloads\6464_13797.6461.01_lethe_galley\2.2_Electrical Items\2.2_1_Galley + Pantry equipment\Foster FlexDrawer Counter FFC2-1 w'.pdf,OK,Manual,Manual,0.9766140976258071
+C:\Users\ashu\Downloads\6464_13797.6461.01_lethe_galley\2.2_Electrical Items\2.2_1_Galley + Pantry equipment\Foster Freezer EP700 L2 G3 w'.pdf,OK,Manual,Manual,0.9638702982155758
+C:\Users\ashu\Downloads\6464_13797.6461.01_lethe_galley\2.2_Electrical Items\2.2_1_Galley + Pantry equipment\Foster Fridge (undercounter) EP1-4H G3 w'.pdf,OK,Manual,Manual,0.9647749370104368
+C:\Users\ashu\Downloads\6464_13797.6461.01_lethe_galley\2.2_Electrical Items\2.2_1_Galley + Pantry equipment\Foster Fridge EP700 H2 G3 w'.pdf,OK,Manual,Manual,0.964233934579212
+C:\Users\ashu\Downloads\6464_13797.6461.01_lethe_galley\2.2_Electrical Items\2.2_1_Galley + Pantry equipment\Foster Iceflaker FMIF120 w'.pdf,OK,Manual,Manual,0.8245936432119122
+C:\Users\ashu\Downloads\6464_13797.6461.01_lethe_galley\2.2_Electrical Items\2.2_1_Galley + Pantry equipment\Freese floor EP Couting 08-2024 certificate'.pdf,OK,Certificate,Certificate,0.8517093114640799
+C:\Users\ashu\Downloads\6464_13797.6461.01_lethe_galley\2.2_Electrical Items\2.2_1_Galley + Pantry equipment\GTN Soda Gun Dispenser'.pdf,OK,Manual,Manual,0.9495154974344233
+C:\Users\ashu\Downloads\6464_13797.6461.01_lethe_galley\2.2_Electrical Items\2.2_1_Galley + Pantry equipment\Hobart Dishwasher Hood Type Profi AMXX-10B'.pdf,OK,Manual,Manual,0.9536336229153223
+C:\Users\ashu\Downloads\6464_13797.6461.01_lethe_galley\2.2_Electrical Items\2.2_1_Galley + Pantry equipment\Hobart Dishwasher PREMAX FP-10C'.pdf,OK,Manual,Manual,0.9475287976515386
+C:\Users\ashu\Downloads\6464_13797.6461.01_lethe_galley\2.2_Electrical Items\2.2_1_Galley + Pantry equipment\Hoshizaki icecube maker IM-30 CWNE - modification to 60Hz'.pdf,OK,Manual,Manual,0.9358694173740509
+C:\Users\ashu\Downloads\6464_13797.6461.01_lethe_galley\2.2_Electrical Items\2.2_1_Galley + Pantry equipment\IME pizza oven Excelsior Piccolo-Due II'.pdf,OK,Manual,Manual,0.892291967581959
+C:\Users\ashu\Downloads\6464_13797.6461.01_lethe_galley\2.2_Electrical Items\2.2_1_Galley + Pantry equipment\Impro UV-C Fat Burning System'.pdf,UNKNOWN,UNKNOWN,Manual,0.7085826853296636
+C:\Users\ashu\Downloads\6464_13797.6461.01_lethe_galley\2.2_Electrical Items\2.2_1_Galley + Pantry equipment\KWC sensor tap TRONIC K.12JK.52.000B23 (battery)'.pdf,UNKNOWN,UNKNOWN,Datasheet,0.4377325079280388
+C:\Users\ashu\Downloads\6464_13797.6461.01_lethe_galley\2.2_Electrical Items\2.2_1_Galley + Pantry equipment\KWC Soap Dispenser Z.538.409.000 chrome'.pdf,UNKNOWN,UNKNOWN,Datasheet,0.39034349088408105
+C:\Users\ashu\Downloads\6464_13797.6461.01_lethe_galley\2.2_Electrical Items\2.2_1_Galley + Pantry equipment\LYG extraction hood for dishwasher -10230012-'.pdf,OK,Manual,Manual,0.7698169686764471
+C:\Users\ashu\Downloads\6464_13797.6461.01_lethe_galley\2.2_Electrical Items\2.2_1_Galley + Pantry equipment\LYG extraction hood for hot block -10189479-'.pdf,OK,Manual,Manual,0.7872128020097804
+C:\Users\ashu\Downloads\6464_13797.6461.01_lethe_galley\2.2_Electrical Items\2.2_1_Galley + Pantry equipment\LYG hot block + furniture s-s Galley (2026)'.pdf,UNKNOWN,UNKNOWN,Manual,0.7000873348121504
+C:\Users\ashu\Downloads\6464_13797.6461.01_lethe_galley\2.2_Electrical Items\2.2_1_Galley + Pantry equipment\Menumaster microwave MFS18TS (60Hz)'.pdf,OK,Manual,Manual,0.9400133974984177
+C:\Users\ashu\Downloads\6464_13797.6461.01_lethe_galley\2.2_Electrical Items\2.2_1_Galley + Pantry equipment\Pactan sealant 7076 anthracite for range equipment '.pdf,UNKNOWN,UNKNOWN,Manual,0.6968887319439411
+C:\Users\ashu\Downloads\6464_13797.6461.01_lethe_galley\2.2_Electrical Items\2.2_1_Galley + Pantry equipment\Panasonic Microwave NE-2180 (60Hz)'.pdf,OK,Manual,Manual,0.7639424728811206
+C:\Users\ashu\Downloads\6464_13797.6461.01_lethe_galley\2.2_Electrical Items\2.2_1_Galley + Pantry equipment\Quooker water dispenser COMBI+& CUBE Nordic Square twin tap'.pdf,OK,Manual,Manual,0.9048848702612304
+C:\Users\ashu\Downloads\6464_13797.6461.01_lethe_galley\2.2_Electrical Items\2.2_1_Galley + Pantry equipment\Rational Combisteamer iCombi Pro 10-1_1 E (single)'.pdf,OK,Manual,Manual,0.947629203705479
+C:\Users\ashu\Downloads\6464_13797.6461.01_lethe_galley\2.2_Electrical Items\2.2_1_Galley + Pantry equipment\Rational Combisteamer iCombi Pro Duo 6-1_1+10-1_1 E (stapelkit)'.pdf,OK,Manual,Manual,0.9396157597923488
+C:\Users\ashu\Downloads\6464_13797.6461.01_lethe_galley\2.2_Electrical Items\2.2_1_Galley + Pantry equipment\Rational CookingCenter iVario 2-XS'.pdf,OK,Manual,Manual,0.9520608327120733
+C:\Users\ashu\Downloads\6464_13797.6461.01_lethe_galley\2.2_Electrical Items\2.2_1_Galley + Pantry equipment\Robot & Coupè Vegetable Slicer R502 V.V.'.pdf,OK,Manual,Manual,0.8379762337351796
+C:\Users\ashu\Downloads\6464_13797.6461.01_lethe_galley\2.2_Electrical Items\2.2_1_Galley + Pantry equipment\Scholl hot-cold plate CP330 RAL 1-1GN'.pdf,OK,Manual,Manual,0.8563041255760452
+"C:\Users\ashu\Downloads\6464_13797.6461.01_lethe_galley\2.2_Electrical Items\2.2_1_Galley + Pantry equipment\SubZero Fridge ICBDEU2450R, mod. water cooling'.pdf",OK,Manual,Manual,0.9416500975127307
+"C:\Users\ashu\Downloads\6464_13797.6461.01_lethe_galley\2.2_Electrical Items\2.2_1_Galley + Pantry equipment\SubZero Fridge-Freezer ICBDET3050CIID, mod. water cooling'.pdf",OK,Manual,Manual,0.9153553747906062
+C:\Users\ashu\Downloads\6464_13797.6461.01_lethe_galley\2.2_Electrical Items\2.2_1_Galley + Pantry equipment\VacuMit Vacuum Packing Machine VacuFox'.pdf,OK,Manual,Manual,0.7860592938195063
+C:\Users\ashu\Downloads\6464_13797.6461.01_lethe_galley\2.2_Electrical Items\2.2_1_Galley + Pantry equipment\Varimixer Mixer Kodiak 20L tabletop'.pdf,OK,Manual,Manual,0.8525456437901775
+C:\Users\ashu\Downloads\6464_13797.6461.01_lethe_galley\2.2_Electrical Items\2.2_2_Lighting\L240_Galley-Downlight_REV01.pdf,UNKNOWN,UNKNOWN,Drawing,0.4373232226706811
+C:\Users\ashu\Downloads\6464_13797.6461.01_lethe_galley\2.2_Electrical Items\2.2_2_Lighting\L241_Galley-Hoodlight.pdf,UNKNOWN,UNKNOWN,Drawing,0.4650946046273162
+C:\Users\ashu\Downloads\6464_13797.6461.01_lethe_galley\2.2_Electrical Items\2.2_2_Lighting\L242_Galley-Cupboardlight.pdf,UNKNOWN,UNKNOWN,Drawing,0.43532567420521323
+C:\Users\ashu\Downloads\6464_13797.6461.01_lethe_galley\2.2_Electrical Items\2.2_2_Lighting\T460_Galley-Cupboard-light_Driver.pdf,UNKNOWN,UNKNOWN,Datasheet,0.5627747223509504
+C:\Users\ashu\Downloads\6464_13797.6461.01_lethe_galley\1.5_Integration Drawings _LYG\Drawing List\13797_LYG_Drawing List.pdf,UNKNOWN,UNKNOWN,Datasheet,0.5901391476702429
+C:\Users\ashu\Downloads\6464_13797.6461.01_lethe_galley\1.5_Integration Drawings _LYG\Area 206\VI Z 2_Galley\13797-6400-K-206-001_03.pdf,OK,Drawing,Drawing,0.9776379487614159
+C:\Users\ashu\Downloads\6464_13797.6461.01_lethe_galley\1.4_Dismantling drawings and catalogue_LYG\1.4_1_Dismantling Catalogue\13797-6411-K-206-001_00.pdf,OK,Drawing,Drawing,0.7803957271945201
+C:\Users\ashu\Downloads\6464_13797.6461.01_lethe_galley\1.4_Dismantling drawings and catalogue_LYG\1.4_2_Dismantling Drawings\Area 206\VIZ2_Galley\13797-6411-K-206-001_00.pdf,OK,Drawing,Drawing,0.7803957271945201
